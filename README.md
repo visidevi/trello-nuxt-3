@@ -74,3 +74,4 @@ bun run preview
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 # trello-nuxt-3
+# trello-nuxt-3
