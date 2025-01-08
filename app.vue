@@ -4,7 +4,10 @@
 </script>
 
 <template>
+  <Html class="bg-blue-500">
   <div>
-    <NuxtPage/>
+    <NuxtPage />
   </div>
+
+  </Html>
 </template>
