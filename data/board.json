@@ -1,0 +1,52 @@
+[
+    {
+        "name": "task-board",
+        "columns": [
+            {
+                "name": "To Do",
+                "tasks": [
+                    {
+                        "name": "Task 1",
+                        "description": "This is a description of task 1",
+                        "id": "68cc3ff4-e434-43ba-9111-a16f9f7eda1a"
+                    },
+                    {
+                        "name": "Task 2",
+                        "description": "This is a description of task 2",
+                        "id": "c21c558d-c5ef-4e29-875c-9c2f166dfcfd"
+                    },
+                    {
+                        "name": "Task 3",
+                        "description": "This is a description of task 3",
+                        "id": "ef96be58-de18-4e38-8fe2-19d2ad84dee9"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "task-board-2",
+        "columns": [
+            {
+                "name": "To Do",
+                "tasks": [
+                    {
+                        "name": "Task 1",
+                        "description": "This is a description of task 1",
+                        "id": "68cc3ff4-e434-43ba-9111-a16f9f7eda1a"
+                    },
+                    {
+                        "name": "Task 2",
+                        "description": "This is a description of task 2",
+                        "id": "c21c558d-c5ef-4e29-875c-9c2f166dfcfd"
+                    },
+                    {
+                        "name": "Task 3",
+                        "description": "This is a description of task 3",
+                        "id": "ef96be58-de18-4e38-8fe2-19d2ad84dee9"
+                    }
+                ]
+            }
+        ]
+    }
+]
