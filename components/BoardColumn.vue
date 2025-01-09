@@ -1,7 +1,7 @@
 <script setup>
 import { useBoardStore } from '../stores/boardStore'
 const router = useRouter()
-defineProps({
+const props = defineProps({
   column: {
     type: Object,
     required: true
@@ -21,7 +21,12 @@ function deleteColumn(columnIndex) {
 }
 function goToTask(taskId) {
   router.push(`/tasks/${taskId}`)
-} 
+}
+const newtaskName = ref('')
+const addTask = () => {
+  boardStore.addTask({ columnIndex: props.columnIndex, name: newtaskName.value })
+  newtaskName.value = ''
+}
 </script>
 
 <template>
@@ -44,5 +49,7 @@ function goToTask(taskId) {
         </UCard>
       </li>
     </ul>
+    <UInput v-model="newtaskName" type="text" placeholder="Create new task" icon="i-heroicons-plus-circle-solid"
+      @keyup.enter="addTask" />
   </UContainer>
 </template>
