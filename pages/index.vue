@@ -1,11 +1,18 @@
 <script setup>
 import { useBoardStore } from '~/stores/boardStore'
-
+const route = useRoute()
+const router = useRouter()
 const boardStore = useBoardStore()
 const newColumnName = ref('')
 const addColumn = () => {
     boardStore.addColumn(newColumnName.value)
     newColumnName.value = ''
+}
+const isModalOpen = computed(() => {
+    return route.name === 'index-tasks-id'
+})
+const closeModal = () => {
+    router.push({ name: 'index' })
 }
 
 </script>
@@ -21,9 +28,8 @@ const addColumn = () => {
                     icon="i-heroicons-plus-circle-solid" @keyup.enter="addColumn" />
             </UContainer>
         </main>
-        <div class="task-bg">
-            task modal
-            <NuxtPage />
+        <div class="task-bg" v-show="isModalOpen" @click.self="closeModal">
+            <NuxtPage :key="route.fullPath" />
         </div>
     </div>
 </template>
