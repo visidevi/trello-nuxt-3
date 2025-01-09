@@ -1,6 +1,6 @@
 <script setup>
 import { useBoardStore } from '../stores/boardStore'
-
+const router = useRouter()
 defineProps({
   column: {
     type: Object,
@@ -19,6 +19,9 @@ const editNameState = ref(false)
 function deleteColumn(columnIndex) {
   boardStore.deleteColumn(columnIndex)
 }
+function goToTask(taskId) {
+  router.push(`/tasks/${taskId}`)
+} 
 </script>
 
 <template>
@@ -29,21 +32,13 @@ function deleteColumn(columnIndex) {
         <h2 v-else>{{ column.name }}</h2>
       </div>
       <div>
-        <UButton
-          icon="i-heroicons-pencil-square"
-          class="mr-2"
-          @click="editNameState = !editNameState"
-        />
-        <UButton
-          icon="i-heroicons-trash"
-          color="red"
-          @click="deleteColumn(columnIndex)"
-        />
+        <UButton icon="i-heroicons-pencil-square" class="mr-2" @click="editNameState = !editNameState" />
+        <UButton icon="i-heroicons-trash" color="red" @click="deleteColumn(columnIndex)" />
       </div>
     </div>
     <ul>
       <li v-for="task in column.tasks" :key="task.id">
-        <UCard class="mb-4">
+        <UCard class="mb-4" @click="goToTask(task.id)">
           <strong>{{ task.name }}</strong>
           <p>{{ task.description }}</p>
         </UCard>

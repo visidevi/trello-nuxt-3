@@ -8,6 +8,7 @@ export const useBoardStore = defineStore('boardStore', () => {
     function addColumn(columnName) {
         board.value.columns.push({
             name: columnName,
+            id: Date.now().toString(),
             tasks: []
         })
     }
@@ -15,10 +16,22 @@ export const useBoardStore = defineStore('boardStore', () => {
     function deleteColumn(columnIndex) {
         board.value.columns.splice(columnIndex, 1)
     }
+    const getTask = computed(() => {
+        return taskId => {
+            const columns = board.value.columns
+            for (const column of columns) {
+                const task = column.tasks.find(task => task.id === taskId)
+                if (task) {
+                    return task
+                }
+            }
+        }
+    })
 
     return {
         board,
         addColumn,
-        deleteColumn
+        deleteColumn,
+        getTask
     }
 })
