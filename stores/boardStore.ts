@@ -33,7 +33,7 @@ export const useBoardStore = defineStore('boardStore', () => {
             const taskIndex = column.tasks.findIndex(task => task.id === taskId)
             if (taskIndex !== -1) {
                 column.tasks.splice(taskIndex, 1)
-                break
+                return
             }
         }
 
@@ -44,7 +44,7 @@ export const useBoardStore = defineStore('boardStore', () => {
             const taskIndex = column.tasks.findIndex(task => task.id === task.id)
             if (taskIndex !== -1) {
                 column.tasks[taskIndex] = task
-                break
+                return
             }
         }
     }

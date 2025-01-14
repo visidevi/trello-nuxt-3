@@ -1,19 +1,17 @@
 <template>
     <div class="task-wrapper">
-        <div class="task-view">
-            <section v-if="task">
-                <UFormGroup label="Name" class="mb-4 w-full">
-                    <UInput v-model="task.name" type="text" />
-                </UFormGroup>
-                <UFormGroup label="Description" class="w-full mb-4">
-                    <UTextarea v-model="task.description" type="text" />
-                </UFormGroup>
-                <UButton icon="i-heroicons-trash" color="red" @click="deleteTask">Delete Task</UButton>
-                <UButton color="green" @click="updateTask">Save</UButton>
-            </section>
-            <section v-else>
-                <p>Task not found.</p>
-            </section>
+        <div class="task-view w-full" v-if="task">
+            <UFormGroup label="Name" class="mb-4 w-full">
+                <UInput v-model="task.name" type="text" />
+            </UFormGroup>
+            <UFormGroup label="Description" class="w-full mb-4">
+                <UTextarea v-model="task.description" type="text" />
+            </UFormGroup>
+            <UButton icon="i-heroicons-trash" class="br-4" color="red" @click="deleteTask">Delete Task</UButton>
+            <!-- <UButton color="green" @click="updateTask">Save</UButton> -->
+        </div>
+        <div v-else>
+            <p>Task not found.</p>
         </div>
     </div>
 </template>
