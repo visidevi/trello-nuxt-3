@@ -1,6 +1,6 @@
 <script setup>
 import { useBoardStore } from '../stores/boardStore'
-const router = useRouter()
+
 const props = defineProps({
   column: {
     type: Object,
@@ -13,57 +13,71 @@ const props = defineProps({
 })
 
 const boardStore = useBoardStore()
+const router = useRouter()
 
 const editNameState = ref(false)
+const newTaskName = ref('')
+
+function addTask() {
+  boardStore.addTask({
+    taskName: newTaskName.value,
+    columnIndex: props.columnIndex
+  })
+  newTaskName.value = ''
+}
 
 function deleteColumn(columnIndex) {
   boardStore.deleteColumn(columnIndex)
 }
+
+function dropItem(event, { toColumnIndex, toTaskIndex }) {
+  const type = event.dataTransfer.getData('type')
+  const fromColumnIndex = event.dataTransfer.getData('from-column-index')
+
+  if (type === 'task') {
+    const fromTaskIndex = event.dataTransfer.getData('from-task-index')
+
+    boardStore.moveTask({
+      fromTaskIndex,
+      toTaskIndex,
+      fromColumnIndex,
+      toColumnIndex
+    })
+  } else if (type === 'column') {
+    boardStore.moveColumn({
+      fromColumnIndex,
+      toColumnIndex
+    })
+  }
+}
+
 function goToTask(taskId) {
   router.push(`/tasks/${taskId}`)
 }
-const newtaskName = ref('')
-const addTask = () => {
-  boardStore.addTask({ columnIndex: props.columnIndex, name: newtaskName.value })
-  newtaskName.value = ''
+
+function pickupColumn(event, fromColumnIndex) {
+  event.dataTransfer.effectAllowed = 'move'
+  event.dataTransfer.dropEffect = 'move'
+  event.dataTransfer.setData('type', 'column')
+  event.dataTransfer.setData('from-column-index', fromColumnIndex)
 }
+
 function pickupTask(event, { fromColumnIndex, fromTaskIndex }) {
   event.dataTransfer.effectAllowed = 'move'
   event.dataTransfer.dropEffect = 'move'
-  event.dataTransfer.setData('type', "task")
+  event.dataTransfer.setData('type', 'task')
   event.dataTransfer.setData('from-column-index', fromColumnIndex)
   event.dataTransfer.setData('from-task-index', fromTaskIndex)
-}
-function dropItem(event, toColumnIndex) {
-  const type = event.dataTransfer.getData('type')
-  const fromColumnIndex = event.dataTransfer.getData('from-column-index')
-  if (type === 'column') {
-    boardStore.moveColumn({ fromColumnIndex, toColumnIndex })
-  }
-
-  const fromTaskIndex = event.dataTransfer.getData('from-task-index')
-  boardStore.moveTask({ fromColumnIndex, taskIndex: fromTaskIndex, toColumnIndex })
-
-}
-function pickupColumn(event) {
-  event.dataTransfer.effectAllowed = 'move'
-  event.dataTransfer.dropEffect = 'move'
-  event.dataTransfer.setData('type', "column")
-  event.dataTransfer.setData('from-column-index', props.columnIndex)
-
 }
 </script>
 
 <template>
-  <UContainer class="column" draggable="true" @drop.stop="dropItem($event, columnIndex)" @dragover.prevent
-    @dragenter.prevent @dragstart.self="pickupColumn($event, {
-      fromColumnIndex: props.columnIndex,
-      fromTaskIndex: taskIndex,
-    })">
+  <UContainer class="column" draggable="true" @dragstart.self="pickupColumn($event, columnIndex)" @dragenter.prevent
+    @dragover.prevent @drop.stop="dropItem($event, { toColumnIndex: columnIndex })">
     <div class="column-header mb-4">
       <div>
         <UInput v-if="editNameState" type="text" v-model="column.name" />
-        <h2 v-else>{{ column?.name }}</h2>
+        <h2 v-else>{{ column.name }}</h2>
       </div>
       <div>
         <UButton icon="i-heroicons-pencil-square" class="mr-2" @click="editNameState = !editNameState" />
@@ -71,17 +85,24 @@ function pickupColumn(event) {
       </div>
     </div>
     <ul>
-      <li v-for="(task, taskIndex) in column.tasks" :key="task?.id">
-        <UCard class="mb-4" @click="goToTask(task.id)" draggable="true" @dragstart="pickupTask($event, {
-          fromColumnIndex: props.columnIndex,
-          fromTaskIndex: taskIndex,
-        })">
-          <strong>{{ task?.name }}</strong>
-          <p>{{ task?.description }}</p>
+      <li v-for="(task, taskIndex) in column.tasks" :key="task.id">
+        <UCard class="mb-4" @click="goToTask(task.id)" draggable="true" @dragstart="
+          pickupTask($event, {
+            fromColumnIndex: columnIndex,
+            fromTaskIndex: taskIndex
+          })
+          " @drop.stop="
+            dropItem($event, {
+              toColumnIndex: columnIndex,
+              toTaskIndex: taskIndex
+            })
+            ">
+          <strong>{{ task.name }}</strong>
+          <p>{{ task.description }}</p>
         </UCard>
       </li>
     </ul>
-    <UInput v-model="newtaskName" type="text" placeholder="Create new task" icon="i-heroicons-plus-circle-solid"
+    <UInput v-model="newTaskName" type="text" placeholder="Create new task" icon="i-heroicons-plus-circle-solid"
       @keyup.enter="addTask" />
   </UContainer>
 </template>
