@@ -30,24 +30,40 @@ const addTask = () => {
 function pickupTask(event, { fromColumnIndex, fromTaskIndex }) {
   event.dataTransfer.effectAllowed = 'move'
   event.dataTransfer.dropEffect = 'move'
+  event.dataTransfer.setData('type', "task")
   event.dataTransfer.setData('from-column-index', fromColumnIndex)
   event.dataTransfer.setData('from-task-index', fromTaskIndex)
-  console.log('dragStart', event)
 }
-function dropTask(event, toColumnIndex) {
+function dropItem(event, toColumnIndex) {
+  const type = event.dataTransfer.getData('type')
   const fromColumnIndex = event.dataTransfer.getData('from-column-index')
+  if (type === 'column') {
+    boardStore.moveColumn({ fromColumnIndex, toColumnIndex })
+  }
+
   const fromTaskIndex = event.dataTransfer.getData('from-task-index')
   boardStore.moveTask({ fromColumnIndex, taskIndex: fromTaskIndex, toColumnIndex })
+
+}
+function pickupColumn(event) {
+  event.dataTransfer.effectAllowed = 'move'
+  event.dataTransfer.dropEffect = 'move'
+  event.dataTransfer.setData('type', "column")
+  event.dataTransfer.setData('from-column-index', props.columnIndex)
 
 }
 </script>
 
 <template>
-  <UContainer class="column" @drop.stop="dropTask($event, columnIndex)" @dragover.prevent @dragenter.prevent>
+  <UContainer class="column" draggable="true" @drop.stop="dropItem($event, columnIndex)" @dragover.prevent
+    @dragenter.prevent @dragstart.self="pickupColumn($event, {
+      fromColumnIndex: props.columnIndex,
+      fromTaskIndex: taskIndex,
+    })">
     <div class="column-header mb-4">
       <div>
         <UInput v-if="editNameState" type="text" v-model="column.name" />
-        <h2 v-else>{{ column.name }}</h2>
+        <h2 v-else>{{ column?.name }}</h2>
       </div>
       <div>
         <UButton icon="i-heroicons-pencil-square" class="mr-2" @click="editNameState = !editNameState" />
@@ -55,13 +71,13 @@ function dropTask(event, toColumnIndex) {
       </div>
     </div>
     <ul>
-      <li v-for="(task, taskIndex) in column.tasks" :key="task.id">
+      <li v-for="(task, taskIndex) in column.tasks" :key="task?.id">
         <UCard class="mb-4" @click="goToTask(task.id)" draggable="true" @dragstart="pickupTask($event, {
           fromColumnIndex: props.columnIndex,
           fromTaskIndex: taskIndex,
         })">
-          <strong>{{ task.name }}</strong>
-          <p>{{ task.description }}</p>
+          <strong>{{ task?.name }}</strong>
+          <p>{{ task?.description }}</p>
         </UCard>
       </li>
     </ul>
